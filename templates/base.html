@@ -1,0 +1,53 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}{% endblock title %} | 本棚アプリ</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="{% static 'book/css/style.css' %}">
+  </head>
+  <body>
+    <nav class="navbar" style="background-color: #e3f2fd;">
+    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+      <div class="background-image"></div>
+      <!-- 開発者側から画像ファイル読み込んだ -->
+        <!-- <img src="{% static 'book/img/icon.jpg' %}" class="navbar-brand img-icon"  /> -->
+        <div class="container-fluid">
+          <a class="navbar-brand" href="{% url 'index' %}">書籍一覧</a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+              <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="{% url 'create-book' %}">書籍登録</a>
+              </li>
+              <li class="nav-item">
+                {% if request.user.is_authenticated %}
+                  <form method="post" action="{% url 'accounts:logout' %}">
+                    {% csrf_token %}
+                  <!-- <a class="nav-li/nk" href="{% url 'accounts:logout' %}">ログアウト</a> -->
+                    <button type="submit">ログアウト</button>
+              </form>
+                <!-- <a class="nav-link" href="{% url 'accounts:logout' %}">ログアウト</a> -->
+              </li>
+              {% else %}
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'accounts:login' %}">ログイン</a>
+                </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'accounts:signup' %}">会員登録</a>
+              </li>
+              {% endif %}
+            </ul>
+          </div>
+        </div>
+      </nav>
+    </nav>
+
+
+    {% block content %}{% endblock content %}
+  </body>
+</html>

@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block title %}ログイン{% endblock %}
+{% block content %}
+
+    <form method="post" class="p-4 m-4 bg-litght border border-success rounded form-group">
+    <h1>ログイン</h1>
+    {% csrf_token %}
+    {% for error in form.error.values %}
+        {{error}}
+    {% endfor %}
+<label>
+    ユーザーID
+</label>
+    <input class="form-control" name = "username">
+<label>
+    パスワード
+</label>
+<input type="password" class="form-control" name="password">
+<button type="submit" class="btn btn-success mt-4">ログインする</button>
+</form>
+{% endblock %}

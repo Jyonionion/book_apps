@@ -1,0 +1,11 @@
+/* div {
+    background-color: rgb(181, 38, 38);
+} */
+
+.navbar-brand.img-icon {
+    width: 100px;
+    height: 100px;
+}
+.background-image{
+    background-image: url("../img/neko.jpeg");
+}

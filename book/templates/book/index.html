@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% load static %} 
+
+{% block title %}本棚アプリ{% endblock %}
+{% block h1 %}本棚アプリ{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-9">
+    {% for item in object_list %}
+    <div class="card text-center">
+        <div class="card-header">
+            {{ item.title }}
+        </div>
+        {% if item.thumbnail %}
+        <img src="{{ item.thumbnail.url }}"  class="img-thumbnail" />
+        {% endif %}
+        <div class="card-body">
+            <p class="card-text">{{ item.text }}</p>
+            <a href="{% url 'detail-book' item.pk %}" class="btn btn-primary">詳細</a>
+        </div>
+        <div class="card-footer text-body-secondary">
+            {{ item.category }}
+        </div>
+    </div>
+    {% endfor %}
+    </div>
+    <div class="col-3">
+        <h2>評価順</h2>
+        {% for ranking_book in ranking_list %}
+            <div class="p-4 m-4 bg-light border border-success rounded">
+                <h3 class="text-succes">{{ ranking_book.title }}</h3>
+                {% if ranking_book.thumbnail %}
+                <img src="{{ ranking_book.thumbnail.url }}" class="img-thumbnail"/>
+                {% endif %}
+                <h6>評価:{{ranking_book.avg_ranking|floatformat}}点</h6>
+                <a href="{% url 'detail-book' ranking_book.id %}">詳細を見る</a>
+                </div>
+            {% endfor %}
+            </div>
+    </div>
+
+</div>
+{% endblock content %}

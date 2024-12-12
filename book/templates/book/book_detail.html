@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block title %}書籍一覧{% endblock %}
+
+{% block content %}
+    <div class="card text-center">
+        <div class="card-header">
+            {{object.title}}
+        </div>
+        <div class="card-body">
+          {% if book.thumbnail %}
+          <img src="{{ item.thumbnail.url }}"  class="img-thumbnail" />
+          {% endif %}
+          <p class="card-text">{{object.text}}</p>
+          <a href="{% url 'review' object.pk %}" class="btn btn-primary">レビュー追加</a>
+          <a href="{% url 'index' %}" class="btn btn-primary">一覧へ</a>
+          <a href="{% url 'update-book' object.pk %}" class="btn btn-primary">編集</a>
+          <a href="{% url 'delete-book' object.pk %}" class="btn btn-primary">削除</a>
+        </div>
+        <div class="card-footer text-body-secondary">
+            {{object.category}}
+        </div>
+      </div>
+{% endblock content %}

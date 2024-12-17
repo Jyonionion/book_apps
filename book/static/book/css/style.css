@@ -9,3 +9,18 @@
 .background-image{
     background-image: url("../img/neko.jpeg");
 }
+
+img {
+    width: 200px; /* 幅を300pxに設定 */
+    height: auto; /* 高さを自動調整 */
+}
+
+.row {
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.card-header {
+    font-size: 24px;
+}
+

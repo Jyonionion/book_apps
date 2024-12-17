@@ -3,7 +3,7 @@ from  .consts import MAX_RATE
 
 RATE_CHOICES = [(x,str(x)) for x in range(0, MAX_RATE + 1)]
 
-CATEGORY = (('business', 'ビジネス'),('life','生活'),('other', 'その他'))
+CATEGORY = (('business', 'ビジネス'),('comics', '漫画'),('life','生活'),('other', 'その他'))
 
 class Book(models.Model):
     title = models.CharField(max_length=100)

@@ -5,12 +5,16 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import Book,Review
 from django.core.exceptions import PermissionDenied
 from django.db.models import Avg
+from .forms import SearchForm
+from django.core.paginator import Paginator
+from .consts import ITEM_PER_PAGE
+
 
 class ListBookView(LoginRequiredMixin, ListView):
     template_name = 'book/book_list.html'
     model = Book
 
-class DetailBookView(LoginRequiredMixin, DetailView):
+class DetailBookView(DetailView):
     template_name = 'book/book_detail.html'
     model = Book
 
@@ -24,6 +28,7 @@ class CreateBookView(LoginRequiredMixin, CreateView):
         form.instance.user = self.request.user
 
         return super().form_valid(form)
+    
 class DeleteBookView(LoginRequiredMixin, DeleteView):
     template_name = 'book/book_confirm_delete.html'
     model = Book
@@ -32,7 +37,7 @@ class DeleteBookView(LoginRequiredMixin, DeleteView):
         obj = super().get_object()
 
         if obj.user != self.request.user:
-            raise PermissionDenied
+            raise PermissionDenied("この本を削除する権限がありません")
         return obj
 
 class UpdateBookView(LoginRequiredMixin, UpdateView):
@@ -45,17 +50,50 @@ class UpdateBookView(LoginRequiredMixin, UpdateView):
         obj = super().get_object(queryset)
 
         if obj.user != self.request.user:
-            raise PermissionDenied
+            raise PermissionDenied("この本を更新する権限がありません")
         return obj
 
     def get_success_url(self):
         return reverse('detail-book', kwargs={'pk': self.object.id})
 
 def index_view(request):
-    object_list = Book.objects.order_by('-id')
-    
-    ranking_list = Book.objects.annotate(avg_ranking=Avg('review__rate')).order_by('-avg_ranking')
-    return render(request, 'book/index.html',{'object_list':object_list, 'ranking_list':ranking_list})
+    sort_option = request.GET.get('sort', 'newest')
+
+    search_results = Book.objects.all()
+
+    if sort_option == 'rating':
+        search_results = search_results.annotate(avg_ranking=Avg('review__rate')).order_by('-avg_ranking')
+    elif sort_option == 'newest':
+        search_results = search_results.order_by('-id')
+    elif sort_option == 'oldest':
+        search_results = search_results.order_by('id')
+
+    searchForm = SearchForm(request.GET)
+    if searchForm.is_valid():
+        keyword = searchForm.cleaned_data['keyword']
+        search_results = search_results.filter(title__icontains=keyword)
+
+
+    ranking_list = Book.objects.annotate(avg_ranking=Avg('review__rate')).order_by('-avg_ranking')[:5]
+
+    paginator = Paginator(ranking_list, ITEM_PER_PAGE)
+    page_number = request.GET.get('page',1)
+    page_obj = paginator.page(page_number)
+
+
+    context = {
+        'object_list': search_results,
+        'ranking_list': ranking_list,
+        'searchForm': searchForm,
+        'sort_option': sort_option, 
+        'page_obj':page_obj
+    }
+
+    return render(
+        request,
+        'book/index.html',
+        context,
+        )
 
 class CreateReviewView(LoginRequiredMixin, CreateView):
     model = Review
